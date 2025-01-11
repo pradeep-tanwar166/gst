@@ -1,0 +1,83 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Day of the Week</title>
+</head>
+<body>
+    <h1>Find the Day of the Week</h1>
+
+    <form id="dateForm">
+        <label for="date">Enter Date (1-31): </label>
+        <input type="number" id="date" min="1" max="31" required><br><br>
+
+        <label for="month">Enter Month (1-12): </label>
+        <input type="number" id="month" min="1" max="12" required><br><br>
+
+        <label for="year">Enter Year: </label>
+        <input type="number" id="year" required><br><br>
+
+        <button type="submit">Find Day</button>
+        <button id="clear">clear</button>
+    </form>
+
+    <p id="result"></p>
+
+    <script>
+        function get(date, number_of_month, year) {
+            const find = [0, 0, 3, 3, 6, 1, 4, 6, 2, 5, 0, 3, 5];  // Month code
+            const sunn = {1600: 6, 1700: 4, 1800: 2, 1900: 0, 2000: 6};  // Century code
+
+            let brr = [];
+            brr.push(date);
+
+            let month_number = ['', 'jan', 'feb', 'mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
+            let current_month = month_number[number_of_month];
+            let month = find[number_of_month];
+            brr.push(month);
+
+            brr.push(Math.floor((year % 100) / 4));  // Year division by 4
+            brr.push(year % 100);  // Last two digits of year
+
+            let century = year - (year % 100);
+            brr.push(sunn[century] || sunn[1600]);  // Default to 1600 if century not found
+
+            let sum = brr.reduce((acc, val) => acc + val, 0);
+
+            let divide = sum % 7;
+            let arr = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+            let isLeapYear = (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+            if (isLeapYear && (current_month === 'jan' || current_month === 'feb')) {
+                divide = (divide - 1 + 7) % 7;
+            }
+
+            return `${date} ${current_month} ${year} : Day = ${arr[divide]}`;
+        }
+
+        // Handle form submission
+        document.getElementById('dateForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            let date = parseInt(document.getElementById('date').value);
+            let number_of_month = parseInt(document.getElementById('month').value);
+            let year = parseInt(document.getElementById('year').value);
+
+            let result = get(date, number_of_month, year);
+            document.getElementById('result').innerText = result;
+        });
+      document.querySelector("#clear").addEventListener("click",function(event){
+        event.preventDefault();
+        document.getElementById("date").value="";
+        document.getElementById("month").value="";
+        document.getElementById("year").value="";
+
+            document.getElementById('result').innerText = "";
+      })
+
+    </script>
+</body>
+</html>
